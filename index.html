@@ -31,14 +31,14 @@
   </head>
   <body>
     Title: <input type="text" id="title" onChange="makeBlock()" /><br />
-    Code: <input type="text" id="data" onChange="makeBlock()" /><br />
+    Code: <input type="text" id="data" onChange="makeBlock()" length="30"/><br />
     Frets: <input type="text" id="frets" onChange="makeBlock()" value="3" /><br />
     Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" /><br />
     x|y|z _
     <p>fret|Text|U/F</p>
     <p>_ Next String</p>
     <p>
-      <svg id="canvas" height="500" width="500"></svg>
+      <svg id="canvas" height="300" width="250"></svg>
 
       <script>
         function generateLine(x, y, width, height) {
@@ -144,6 +144,7 @@
               }
               svgcanvas.appendChild(circle);
               if (letter !== "" && letter != undefined) {
+                console.log(letter);
                 var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 txt.setAttributeNS(null, "x", padding + str * stringWidth);
 
@@ -168,46 +169,6 @@
           });
         }
 
-        var btn = document.querySelector("button");
-        var svg = document.querySelector("svg");
-        var canvas = document.querySelector("canvas");
-
-        function triggerDownload(imgURI) {
-          var evt = new MouseEvent("click", {
-            view: window,
-            bubbles: false,
-            cancelable: true,
-          });
-
-          var a = document.createElement("a");
-          a.setAttribute("download", "MY_COOL_IMAGE.png");
-          a.setAttribute("href", imgURI);
-          a.setAttribute("target", "_blank");
-
-          a.dispatchEvent(evt);
-        }
-
-        btn.addEventListener("click", function () {
-          var canvas = document.getElementById("canvas");
-          var ctx = canvas.getContext("2d");
-          var data = new XMLSerializer().serializeToString(svg);
-          var DOMURL = window.URL || window.webkitURL || window;
-
-          var img = new Image();
-          var svgBlob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
-          var url = DOMURL.createObjectURL(svgBlob);
-
-          img.onload = function () {
-            ctx.drawImage(img, 0, 0);
-            DOMURL.revokeObjectURL(url);
-
-            var imgURI = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-
-            triggerDownload(imgURI);
-          };
-
-          img.src = url;
-        });
       </script>
     </p>
   </body>

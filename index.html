@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Saira+Condensed:wght@500&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chord Block Generator</title>
+
+    <style>
+      .title {
+        font-family: "Saira Condensed";
+        font-size: 40px;
+      }
+      .fingering {
+        font-family: sans-serif;
+        font-size: 15px;
+      }
+      .mute {
+        font-family: sans-serif;
+        font-weight: bolder;
+        font-size: 20px;
+      }
+      .basefret {
+        font-family: sans-serif;
+        font-weight: bolder;
+        font-size: 25px;
+      }
+    </style>
+  </head>
+  <body>
+    Title: <input type="text" id="title" onChange="makeBlock()" /><br />
+    Code: <input type="text" id="data" onChange="makeBlock()" /><br />
+    Frets: <input type="text" id="frets" onChange="makeBlock()" value="3" /><br />
+    Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" /><br />
+    x|y|z _
+    <p>fret|Text|U/F</p>
+    <p>_ Next String</p>
+    <p>
+      <svg id="canvas" height="500" width="500"></svg>
+
+      <script>
+        function generateLine(x, y, width, height) {
+          const fret = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          fret.setAttributeNS(null, "x1", x);
+          fret.setAttributeNS(null, "x2", x + width);
+          fret.setAttributeNS(null, "y1", y);
+          fret.setAttributeNS(null, "y2", y + height);
+          fret.style = "stroke: rgb(0, 0, 0); stroke-width: 2";
+          return fret;
+        }
+
+        function generateCircle(x, y, radius, filled) {
+          const finger = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          finger.setAttributeNS(null, "cx", x);
+          finger.setAttributeNS(null, "cy", y);
+          finger.setAttributeNS(null, "r", radius);
+          finger.setAttributeNS(null, "stroke", "black");
+          finger.setAttributeNS(null, "stroke-width", "2");
+          if (filled) {
+            finger.setAttributeNS(null, "fill", "black");
+          } else {
+            finger.setAttributeNS(null, "fill", "white");
+          }
+          return finger;
+        }
+
+        function makeBlock() {
+          var padding = 50;
+          var topPadding = 100;
+          var frets = document.getElementById("frets").value;
+          var strings = 6;
+          var boardWidth = 150;
+          var fretHeight = 50;
+          var stringWidth = boardWidth / (strings - 1);
+          var radius = 10;
+
+          var svgcanvas = document.getElementById("canvas");
+          svgcanvas.innerHTML = "";
+
+          svgcanvas.setAttributeNS("http://www.w3.org/2000/svg", "width", boardWidth + padding * 2);
+          svgcanvas.setAttributeNS("http://www.w3.org/2000/svg", "height", topPadding + frets * fretHeight + padding);
+
+          var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          txt.setAttributeNS(null, "x", (boardWidth + padding * 2) / 2);
+          txt.setAttributeNS(null, "y", topPadding / 2);
+          txt.setAttributeNS(null, "text-anchor", "middle");
+          txt.setAttributeNS(null, "fill", "black");
+          txt.setAttributeNS(null, "class", "title");
+          txt.innerHTML = document.getElementById("title").value;
+          svgcanvas.appendChild(txt);
+
+          var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          txt.setAttributeNS(null, "x", padding - 20);
+          txt.setAttributeNS(null, "y", topPadding + fretHeight / 2);
+          txt.setAttributeNS(null, "text-anchor", "middle");
+          txt.setAttributeNS(null, "fill", "black");
+          txt.setAttributeNS(null, "class", "basefret");
+          txt.setAttributeNS(null, "alignment-baseline", "central");
+          txt.innerHTML = document.getElementById("fret").value;
+          svgcanvas.appendChild(txt);
+
+          for (var i = 0; i <= frets; i++) {
+            var fret = generateLine(padding, topPadding + i * fretHeight, boardWidth, 0);
+            svgcanvas.appendChild(fret);
+          }
+
+          for (var i = 0; i < strings; i++) {
+            var string = generateLine(padding + i * stringWidth, topPadding, 0, frets * fretHeight);
+            svgcanvas.appendChild(string);
+          }
+
+          data = document.getElementById("data");
+          datum = data.value.split(" ");
+
+          var str = 0;
+          datum.forEach((element) => {
+            var options = element.split("|");
+            var f = options[0];
+            if (f == "") {
+              return;
+            }
+            if (f == "x" || f == "X") {
+              var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+              txt.setAttributeNS(null, "x", padding + str * stringWidth);
+              txt.setAttributeNS(null, "y", topPadding - 12);
+              txt.setAttributeNS(null, "text-anchor", "middle");
+              txt.setAttributeNS(null, "fill", "black");
+              txt.setAttributeNS(null, "class", "mute");
+              txt.setAttributeNS(null, "alignment-baseline", "central");
+              txt.innerHTML = "X";
+              svgcanvas.appendChild(txt);
+            } else if (f == "_") {
+              str++;
+            } else if (f <= frets) {
+              var filled = options[2] === "U" ? false : true;
+              var letter = options[1];
+
+              if (f == 0) {
+                var circle = generateCircle(padding + str * stringWidth, topPadding - radius - 3, radius - 2, filled);
+              } else {
+                var circle = generateCircle(padding + str * stringWidth, topPadding + fretHeight / 2 + (f - 1) * fretHeight, radius, filled);
+              }
+              svgcanvas.appendChild(circle);
+              if (letter !== "" && letter != undefined) {
+                var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt.setAttributeNS(null, "x", padding + str * stringWidth);
+
+                if (f != 0) {
+                  txt.setAttributeNS(null, "y", topPadding + fretHeight / 2 + (f - 1) * fretHeight);
+                } else {
+                  txt.setAttributeNS(null, "y", topPadding - radius - 4);
+                }
+                txt.setAttributeNS(null, "text-anchor", "middle");
+                if (filled) {
+                  txt.setAttributeNS(null, "fill", "white");
+                } else {
+                  txt.setAttributeNS(null, "fill", "black");
+                }
+
+                txt.setAttributeNS(null, "class", "fingering");
+                txt.setAttributeNS(null, "alignment-baseline", "central");
+                txt.innerHTML = letter;
+                canvas.appendChild(txt);
+              }
+            }
+          });
+        }
+
+        var btn = document.querySelector("button");
+        var svg = document.querySelector("svg");
+        var canvas = document.querySelector("canvas");
+
+        function triggerDownload(imgURI) {
+          var evt = new MouseEvent("click", {
+            view: window,
+            bubbles: false,
+            cancelable: true,
+          });
+
+          var a = document.createElement("a");
+          a.setAttribute("download", "MY_COOL_IMAGE.png");
+          a.setAttribute("href", imgURI);
+          a.setAttribute("target", "_blank");
+
+          a.dispatchEvent(evt);
+        }
+
+        btn.addEventListener("click", function () {
+          var canvas = document.getElementById("canvas");
+          var ctx = canvas.getContext("2d");
+          var data = new XMLSerializer().serializeToString(svg);
+          var DOMURL = window.URL || window.webkitURL || window;
+
+          var img = new Image();
+          var svgBlob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
+          var url = DOMURL.createObjectURL(svgBlob);
+
+          img.onload = function () {
+            ctx.drawImage(img, 0, 0);
+            DOMURL.revokeObjectURL(url);
+
+            var imgURI = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+
+            triggerDownload(imgURI);
+          };
+
+          img.src = url;
+        });
+      </script>
+    </p>
+  </body>
+</html>

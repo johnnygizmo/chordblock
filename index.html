@@ -13,6 +13,10 @@
         font-family: "Saira Condensed";
         font-size: 40px;
       }
+      .subnote {
+        font-family: "Saira Condensed";
+        font-size: 20px;
+      }      
       .fingering {
         font-family: sans-serif;
         font-size: 15px;
@@ -31,6 +35,7 @@
   </head>
   <body>
     Title: <input type="text" id="title" onChange="makeBlock()" /><br />
+    Bottom Note: <input type="text" id="note" onChange="makeBlock()" /><br />
     Code: <input type="text" id="data" onChange="makeBlock()" length="30"/><br />
     Frets: <input type="text" id="frets" onChange="makeBlock()" value="3" /><br />
     Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" /><br />
@@ -90,6 +95,16 @@
           txt.setAttributeNS(null, "class", "title");
           txt.innerHTML = document.getElementById("title").value;
           svgcanvas.appendChild(txt);
+        
+          var note = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          note.setAttributeNS(null, "x", (boardWidth + padding * 2) / 2);
+          note.setAttributeNS(null, "y", topPadding + frets * fretHeight + 20 );
+          note.setAttributeNS(null, "text-anchor", "middle");
+          note.setAttributeNS(null, "fill", "black");
+          note.setAttributeNS(null, "class", "subnote");
+          note.innerHTML = document.getElementById("note").value;
+          svgcanvas.appendChild(note);
+
 
           var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
           txt.setAttributeNS(null, "x", padding - 20);

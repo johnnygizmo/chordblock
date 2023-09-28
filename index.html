@@ -16,7 +16,7 @@
       .subnote {
         font-family: "Saira Condensed";
         font-size: 20px;
-      }      
+      }
       .fingering {
         font-family: sans-serif;
         font-size: 15px;
@@ -31,28 +31,46 @@
         font-weight: bolder;
         font-size: 25px;
       }
+
+      .basicline {
+        stroke: rgb(0, 0, 0);
+        stroke-width: 2;
+      }
+
+      .barreline {
+        stroke: rgb(0, 0, 0);
+        stroke-width: 22;
+      }
     </style>
   </head>
   <body>
-    Title: <input type="text" id="title" onChange="makeBlock()" /><br />
-    Bottom Note: <input type="text" id="note" onChange="makeBlock()" /><br />
-    Code: <input type="text" id="data" onChange="makeBlock()" length="30"/><br />
-    Frets: <input type="text" id="frets" onChange="makeBlock()" value="3" /><br />
-    Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" /><br />
-    x|y|z _
-    <p>fret|Text|U/F</p>
-    <p>_ Next String</p>
+    Title: <input type="text" id="title" onChange="makeBlock()" size="30" /><br />
+    Bottom Note: <input type="text" id="note" onChange="makeBlock()" size="30" /><br />
+    Code: <input type="text" id="data" onChange="makeBlock()" size="30" /><br />
+    Frets: <input type="text" id="frets" onChange="makeBlock()" value="3" size="1" /><br />
+    Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" size="2" /><br />
+    <b>Barre</b><br />
+    Fret:<input type="text" id="barreFret" onChange="makeBlock()" value="1" size="3" /> Start String:<input
+      size="3"
+      type="text"
+      id="barreStart"
+      onChange="makeBlock()"
+      value="0"
+    />
+    End String:<input size="3" type="text" id="barreEnd" onChange="makeBlock()" value="0" />
+
     <p>
-      <svg id="canvas" height="300" width="250"></svg>
+      <svg id="canvas" height="500" width="250"></svg>
 
       <script>
-        function generateLine(x, y, width, height) {
+        function generateLine(x, y, width, height, className = "basicline") {
           const fret = document.createElementNS("http://www.w3.org/2000/svg", "line");
           fret.setAttributeNS(null, "x1", x);
           fret.setAttributeNS(null, "x2", x + width);
           fret.setAttributeNS(null, "y1", y);
           fret.setAttributeNS(null, "y2", y + height);
-          fret.style = "stroke: rgb(0, 0, 0); stroke-width: 2";
+          fret.setAttributeNS(null, "class", className);
+          //fret.style = "stroke: rgb(0, 0, 0); stroke-width: 2";
           return fret;
         }
 
@@ -87,6 +105,7 @@
           svgcanvas.setAttributeNS("http://www.w3.org/2000/svg", "width", boardWidth + padding * 2);
           svgcanvas.setAttributeNS("http://www.w3.org/2000/svg", "height", topPadding + frets * fretHeight + padding);
 
+          // Title
           var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
           txt.setAttributeNS(null, "x", (boardWidth + padding * 2) / 2);
           txt.setAttributeNS(null, "y", topPadding / 2);
@@ -95,17 +114,18 @@
           txt.setAttributeNS(null, "class", "title");
           txt.innerHTML = document.getElementById("title").value;
           svgcanvas.appendChild(txt);
-        
+
+          // Note
           var note = document.createElementNS("http://www.w3.org/2000/svg", "text");
           note.setAttributeNS(null, "x", (boardWidth + padding * 2) / 2);
-          note.setAttributeNS(null, "y", topPadding + frets * fretHeight + 20 );
+          note.setAttributeNS(null, "y", topPadding + frets * fretHeight + 20);
           note.setAttributeNS(null, "text-anchor", "middle");
           note.setAttributeNS(null, "fill", "black");
           note.setAttributeNS(null, "class", "subnote");
           note.innerHTML = document.getElementById("note").value;
           svgcanvas.appendChild(note);
 
-
+          // Fret Marker
           var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
           txt.setAttributeNS(null, "x", padding - 20);
           txt.setAttributeNS(null, "y", topPadding + fretHeight / 2);
@@ -116,16 +136,35 @@
           txt.innerHTML = document.getElementById("fret").value;
           svgcanvas.appendChild(txt);
 
+          // Frets
           for (var i = 0; i <= frets; i++) {
             var fret = generateLine(padding, topPadding + i * fretHeight, boardWidth, 0);
             svgcanvas.appendChild(fret);
           }
 
+          // Strings
           for (var i = 0; i < strings; i++) {
             var string = generateLine(padding + i * stringWidth, topPadding, 0, frets * fretHeight);
             svgcanvas.appendChild(string);
           }
 
+          // Barre
+          var barreFret = document.getElementById("barreFret").value;
+          var barreStart = document.getElementById("barreStart").value;
+          var barreEnd = document.getElementById("barreEnd").value;
+
+          if (barreFret != "") {
+            var barre = generateLine(
+              padding + barreStart * stringWidth,
+              topPadding + barreFret * fretHeight + fretHeight / 2,
+              stringWidth * (barreEnd - barreStart),
+              0,
+              "barreline"
+            );
+            svgcanvas.appendChild(barre);
+          }
+
+          // Fingerings
           data = document.getElementById("data");
           datum = data.value.split(" ");
 
@@ -183,7 +222,6 @@
             }
           });
         }
-
       </script>
     </p>
   </body>

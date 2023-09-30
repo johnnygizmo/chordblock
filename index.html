@@ -4,224 +4,45 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Saira+Condensed:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chord Block Generator</title>
 
-    <style>
-      .title {
-        font-family: "Saira Condensed";
-        font-size: 40px;
-      }
-      .subnote {
-        font-family: "Saira Condensed";
-        font-size: 20px;
-      }
-      .fingering {
-        font-family: sans-serif;
-        font-size: 15px;
-      }
-      .mute {
-        font-family: sans-serif;
-        font-weight: bolder;
-        font-size: 20px;
-      }
-      .basefret {
-        font-family: sans-serif;
-        font-weight: bolder;
-        font-size: 25px;
-      }
-
-      .basicline {
-        stroke: rgb(0, 0, 0);
-        stroke-width: 2;
-      }
-
-      .barreline {
-        stroke: rgb(0, 0, 0);
-        stroke-width: 22;
-      }
-    </style>
+    <style></style>
   </head>
   <body>
-    Title: <input type="text" id="title" onChange="makeBlock()" size="30" /><br />
-    Bottom Note: <input type="text" id="note" onChange="makeBlock()" size="30" /><br />
-    Code: <input type="text" id="data" onChange="makeBlock()" size="30" /><br />
-    Frets: <input type="text" id="frets" onChange="makeBlock()" value="3" size="1" /><br />
-    Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" size="2" /><br />
-    <b>Barre</b><br />
-    Fret:<input type="text" id="barreFret" onChange="makeBlock()" value="1" size="3" /> Start String:<input
-      size="3"
-      type="text"
-      id="barreStart"
-      onChange="makeBlock()"
-      value="0"
-    />
-    End String:<input size="3" type="text" id="barreEnd" onChange="makeBlock()" value="0" />
+    <table>
+      <tr>
+        <td>
+          Title: <input type="text" id="title" onChange="makeBlock()" size="30" /><br />
+          Title Padding: <input type="text" id="titlePad" onChange="makeBlock()" value="0" size="2" /><br />
+          Bottom Note: <input type="text" id="note" onChange="makeBlock()" size="30" /><br />
+          Code:
+          <textarea id="data" rows="10" cols="50" onChange="makeBlock()"></textarea><br />
+
+          <!-- <input type="text" id="data"  size="30" /> -->
+          Frets: <input type="text" id="frets" onChange="makeBlock()" value="5" size="1" /><br />
+          Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" size="2" /><br />
+          <b>Barre</b><br />
+          Fret:<input type="text" id="barreFret" onChange="makeBlock()" value="1" size="3" /> Start String:<input
+            size="3"
+            type="text"
+            id="barreStart"
+            onChange="makeBlock()"
+            value="0"
+          />
+          End String:<input size="3" type="text" id="barreEnd" onChange="makeBlock()" value="0" /><br />
+          Show Dots<input type="checkbox" id="showDots" onChange="makeBlock()" />
+        </td>
+        <td><svg id="canvas" height="1200" width="250"></svg></td>
+      </tr>
+    </table>
 
     <p>
-      <svg id="canvas" height="500" width="250"></svg>
-
+      <script src="library.js"></script>
       <script>
-        function generateLine(x, y, width, height, className = "basicline") {
-          const fret = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          fret.setAttributeNS(null, "x1", x);
-          fret.setAttributeNS(null, "x2", x + width);
-          fret.setAttributeNS(null, "y1", y);
-          fret.setAttributeNS(null, "y2", y + height);
-          fret.setAttributeNS(null, "class", className);
-          //fret.style = "stroke: rgb(0, 0, 0); stroke-width: 2";
-          return fret;
-        }
-
-        function generateCircle(x, y, radius, filled) {
-          const finger = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-          finger.setAttributeNS(null, "cx", x);
-          finger.setAttributeNS(null, "cy", y);
-          finger.setAttributeNS(null, "r", radius);
-          finger.setAttributeNS(null, "stroke", "black");
-          finger.setAttributeNS(null, "stroke-width", "2");
-          if (filled) {
-            finger.setAttributeNS(null, "fill", "black");
-          } else {
-            finger.setAttributeNS(null, "fill", "white");
-          }
-          return finger;
-        }
-
-        function makeBlock() {
-          var padding = 50;
-          var topPadding = 100;
-          var frets = document.getElementById("frets").value;
-          var strings = 6;
-          var boardWidth = 150;
-          var fretHeight = 50;
-          var stringWidth = boardWidth / (strings - 1);
-          var radius = 10;
-
-          var svgcanvas = document.getElementById("canvas");
-          svgcanvas.innerHTML = "";
-
-          svgcanvas.setAttributeNS("http://www.w3.org/2000/svg", "width", boardWidth + padding * 2);
-          svgcanvas.setAttributeNS("http://www.w3.org/2000/svg", "height", topPadding + frets * fretHeight + padding);
-
-          // Title
-          var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          txt.setAttributeNS(null, "x", (boardWidth + padding * 2) / 2);
-          txt.setAttributeNS(null, "y", topPadding / 2);
-          txt.setAttributeNS(null, "text-anchor", "middle");
-          txt.setAttributeNS(null, "fill", "black");
-          txt.setAttributeNS(null, "class", "title");
-          txt.innerHTML = document.getElementById("title").value;
-          svgcanvas.appendChild(txt);
-
-          // Note
-          var note = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          note.setAttributeNS(null, "x", (boardWidth + padding * 2) / 2);
-          note.setAttributeNS(null, "y", topPadding + frets * fretHeight + 20);
-          note.setAttributeNS(null, "text-anchor", "middle");
-          note.setAttributeNS(null, "fill", "black");
-          note.setAttributeNS(null, "class", "subnote");
-          note.innerHTML = document.getElementById("note").value;
-          svgcanvas.appendChild(note);
-
-          // Fret Marker
-          var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          txt.setAttributeNS(null, "x", padding - 20);
-          txt.setAttributeNS(null, "y", topPadding + fretHeight / 2);
-          txt.setAttributeNS(null, "text-anchor", "middle");
-          txt.setAttributeNS(null, "fill", "black");
-          txt.setAttributeNS(null, "class", "basefret");
-          txt.setAttributeNS(null, "alignment-baseline", "central");
-          txt.innerHTML = document.getElementById("fret").value;
-          svgcanvas.appendChild(txt);
-
-          // Frets
-          for (var i = 0; i <= frets; i++) {
-            var fret = generateLine(padding, topPadding + i * fretHeight, boardWidth, 0);
-            svgcanvas.appendChild(fret);
-          }
-
-          // Strings
-          for (var i = 0; i < strings; i++) {
-            var string = generateLine(padding + i * stringWidth, topPadding, 0, frets * fretHeight);
-            svgcanvas.appendChild(string);
-          }
-
-          // Barre
-          var barreFret = document.getElementById("barreFret").value;
-          var barreStart = document.getElementById("barreStart").value;
-          var barreEnd = document.getElementById("barreEnd").value;
-
-          if (barreFret != "") {
-            var barre = generateLine(
-              padding + barreStart * stringWidth,
-              topPadding + barreFret * fretHeight + fretHeight / 2,
-              stringWidth * (barreEnd - barreStart),
-              0,
-              "barreline"
-            );
-            svgcanvas.appendChild(barre);
-          }
-
-          // Fingerings
-          data = document.getElementById("data");
-          datum = data.value.split(" ");
-
-          var str = 0;
-          datum.forEach((element) => {
-            var options = element.split("|");
-            var f = options[0];
-            if (f == "") {
-              return;
-            }
-            if (f == "x" || f == "X") {
-              var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-              txt.setAttributeNS(null, "x", padding + str * stringWidth);
-              txt.setAttributeNS(null, "y", topPadding - 12);
-              txt.setAttributeNS(null, "text-anchor", "middle");
-              txt.setAttributeNS(null, "fill", "black");
-              txt.setAttributeNS(null, "class", "mute");
-              txt.setAttributeNS(null, "alignment-baseline", "central");
-              txt.innerHTML = "X";
-              svgcanvas.appendChild(txt);
-            } else if (f == "_") {
-              str++;
-            } else if (f <= frets) {
-              var filled = options[2] === "U" ? false : true;
-              var letter = options[1];
-
-              if (f == 0) {
-                var circle = generateCircle(padding + str * stringWidth, topPadding - radius - 3, radius - 2, filled);
-              } else {
-                var circle = generateCircle(padding + str * stringWidth, topPadding + fretHeight / 2 + (f - 1) * fretHeight, radius, filled);
-              }
-              svgcanvas.appendChild(circle);
-              if (letter !== "" && letter != undefined) {
-                console.log(letter);
-                var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                txt.setAttributeNS(null, "x", padding + str * stringWidth);
-
-                if (f != 0) {
-                  txt.setAttributeNS(null, "y", topPadding + fretHeight / 2 + (f - 1) * fretHeight);
-                } else {
-                  txt.setAttributeNS(null, "y", topPadding - radius - 4);
-                }
-                txt.setAttributeNS(null, "text-anchor", "middle");
-                if (filled) {
-                  txt.setAttributeNS(null, "fill", "white");
-                } else {
-                  txt.setAttributeNS(null, "fill", "black");
-                }
-
-                txt.setAttributeNS(null, "class", "fingering");
-                txt.setAttributeNS(null, "alignment-baseline", "central");
-                txt.innerHTML = letter;
-                canvas.appendChild(txt);
-              }
-            }
-          });
-        }
+        makeBlock();
       </script>
     </p>
   </body>

@@ -1,0 +1,37 @@
+.title {
+  font-family: "Saira Condensed";
+  font-size: 40px;
+}
+.subnote {
+  font-family: "Saira Condensed";
+  font-size: 20px;
+}
+.fingering {
+  font-family: sans-serif;
+  font-size: 15px;
+}
+.mute {
+  font-family: sans-serif;
+  font-weight: bolder;
+  font-size: 20px;
+}
+.basefret {
+  font-family: sans-serif;
+  font-weight: bolder;
+  font-size: 25px;
+}
+
+.basicline {
+  stroke: rgb(0, 0, 0);
+  stroke-width: 2;
+}
+
+.barreline {
+  stroke: rgb(0, 0, 0);
+  stroke-width: 22;
+}
+
+.dot {
+  stroke: rgb(151, 151, 151);
+  fill: rgb(151, 151, 151);
+}

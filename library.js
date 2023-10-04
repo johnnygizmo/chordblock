@@ -119,21 +119,33 @@ function makeBlock() {
       }
     });
   }
-  // Barre
+  // Barre 1
   var barreFret = document.getElementById("barreFret").value;
   var barreStart = document.getElementById("barreStart").value;
   var barreEnd = document.getElementById("barreEnd").value;
 
-  if (barreFret != "") {
-    var barre = generateLine(
-      padding + barreStart * stringWidth,
-      topPadding + barreFret * fretHeight + fretHeight / 2,
-      stringWidth * (barreEnd - barreStart),
-      0,
-      "barreline"
-    );
-    svgcanvas.appendChild(barre);
-  }
+  var barre = generateLine(
+    padding + barreStart * stringWidth,
+    topPadding + barreFret * fretHeight + fretHeight / 2,
+    stringWidth * (barreEnd - barreStart),
+    0,
+    "barreline"
+  );
+  svgcanvas.appendChild(barre);
+
+  // Barre 2
+  var barreFret2 = Number(document.getElementById("barreFret2").value);
+  var barreStart2 = Number(document.getElementById("barreStart2").value);
+  var barreEnd2 = Number(document.getElementById("barreEnd2").value);
+
+  var barre2 = generateLine(
+    padding + barreStart2 * stringWidth,
+    topPadding + barreFret2 * fretHeight + fretHeight / 2,
+    stringWidth * (barreEnd2 - barreStart2),
+    0,
+    "barreline"
+  );
+  svgcanvas.appendChild(barre2);
 
   // Fingerings
 
@@ -183,6 +195,8 @@ function makeBlock() {
             txt.setAttributeNS(null, "fill", "black");
           }
 
+          var ffs = Number(document.getElementById("frettedFontSize").value);
+          txt.setAttributeNS(null, "style", "font-size:" + ffs + "px");
           txt.setAttributeNS(null, "class", "fingering");
           txt.setAttributeNS(null, "alignment-baseline", "central");
           txt.innerHTML = letter;

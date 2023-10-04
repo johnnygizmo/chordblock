@@ -4,6 +4,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Saira+Condensed:wght@500&display=swap" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="style.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,32 +18,74 @@
     <style></style>
   </head>
   <body>
-    <table>
-      <tr>
-        <td>
-          Title: <input type="text" id="title" onChange="makeBlock()" size="30" /><br />
-          Title Padding: <input type="text" id="titlePad" onChange="makeBlock()" value="0" size="2" /><br />
-          Bottom Note: <input type="text" id="note" onChange="makeBlock()" size="30" /><br />
-          Code:
-          <textarea id="data" rows="10" cols="50" onChange="makeBlock()"></textarea><br />
+    <div class="container">
+      <div class="row">
+        <div class="col"><h1>Chord Block Generator</h1></div>
+      </div>
 
-          <!-- <input type="text" id="data"  size="30" /> -->
-          Frets: <input type="text" id="frets" onChange="makeBlock()" value="5" size="1" /><br />
-          Base Fret: <input type="text" id="fret" onChange="makeBlock()" value="" size="2" /><br />
-          <b>Barre</b><br />
-          Fret:<input type="text" id="barreFret" onChange="makeBlock()" value="1" size="3" /> Start String:<input
-            size="3"
-            type="text"
-            id="barreStart"
-            onChange="makeBlock()"
-            value="0"
-          />
-          End String:<input size="3" type="text" id="barreEnd" onChange="makeBlock()" value="0" /><br />
-          Show Dots<input type="checkbox" id="showDots" onChange="makeBlock()" />
-        </td>
-        <td><svg id="canvas" height="1200" width="250"></svg></td>
-      </tr>
-    </table>
+      <div class="row">
+        <div class="col-5">
+          <div class="row">
+            <div class="col-3">Title:</div>
+            <div class="col"><input type="text" id="title" onChange="makeBlock()" size="30" /></div>
+          </div>
+
+          <div class="row">
+            <div class="col-3">Title Padding:</div>
+            <div class="col"><input type="text" id="titlePad" onChange="makeBlock()" value="0" size="2" /></div>
+          </div>
+          <div class="row">
+            <div class="col-3">Bottom Note:</div>
+            <div class="col"><input type="text" id="note" onChange="makeBlock()" size="30" /></div>
+          </div>
+          <div class="row">
+            <div class="col-3">Code:</div>
+            <div class="col"><textarea id="data" rows="10" cols="50" onChange="makeBlock()"></textarea></div>
+          </div>
+          <div class="row">
+            <div class="col-3">Frets:</div>
+            <div class="col"><input type="text" id="frets" onChange="makeBlock()" value="5" size="1" /></div>
+          </div>
+          <div class="row">
+            <div class="col-3">Base Fret:</div>
+            <div class="col"><input type="text" id="fret" onChange="makeBlock()" value="" size="2" /></div>
+          </div>
+
+          <div class="row">
+            <div class="col-3">Barre 1 Fret:</div>
+            <div class="col-1"><input type="text" id="barreFret" onChange="makeBlock()" value="0" size="2" style="width: 25px" /></div>
+            <div class="col-1">Start:</div>
+            <div class="col-1"><input size="2" type="text" id="barreStart" onChange="makeBlock()" value="0" style="width: 25px" /></div>
+            <div class="col-1">End:</div>
+            <div class="col-1"><input size="2" type="text" id="barreEnd" onChange="makeBlock()" value="0" style="width: 25px" /></div>
+          </div>
+
+          <div class="row">
+            <div class="col-3">Barre 2 Fret:</div>
+            <div class="col-1">
+              <input type="text" id="barreFret2" onChange="makeBlock()" value="0" size="2" width="25" style="width: 25px" />
+            </div>
+            <div class="col-1">Start:</div>
+            <div class="col-1"><input size="2" type="text" id="barreStart2" onChange="makeBlock()" value="0" style="width: 25px" /></div>
+            <div class="col-1">End:</div>
+            <div class="col-1"><input size="2" type="text" id="barreEnd2" onChange="makeBlock()" value="0" style="width: 25px" /></div>
+          </div>
+
+          <div class="row">
+            <div class="col-3">Show Dots:</div>
+            <div class="col"><input type="checkbox" id="showDots" onChange="makeBlock()" /></div>
+          </div>
+
+          <div class="row">
+            <div class="col-3">Fretted Font Size:</div>
+            <div class="col"><input type="text" id="frettedFontSize" onChange="makeBlock()" value="15" size="2" /></div>
+          </div>
+        </div>
+        <div class="col">
+          <svg id="canvas" height="1200" width="250"></svg>
+        </div>
+      </div>
+    </div>
 
     <p>
       <script src="library.js"></script>
@@ -45,5 +93,10 @@
         makeBlock();
       </script>
     </p>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
